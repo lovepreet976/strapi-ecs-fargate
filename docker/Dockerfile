@@ -6,7 +6,7 @@ COPY strapi/package*.json ./
 
 RUN npm install
 
-COPY strapi .
+COPY strapi/ ./
 
 ENV NODE_ENV=production
 
