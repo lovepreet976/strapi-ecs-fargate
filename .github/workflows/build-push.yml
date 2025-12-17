@@ -22,12 +22,16 @@ jobs:
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-          | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
+          | docker login --username AWS --password-stdin \
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ECR_REPO }}:${{ github.sha }} ./app
+          docker build \
+            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} \
+            .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.ECR_REPO }}:${{ github.sha }}
+          docker push \
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
