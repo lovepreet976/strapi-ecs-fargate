@@ -3,9 +3,8 @@
 *.tfstate
 *.tfstate.*
 terraform.tfvars
-crash.log
-crash.*.log
 
-# OS
+# Node / OS
+node_modules/
 .DS_Store
 Thumbs.db
