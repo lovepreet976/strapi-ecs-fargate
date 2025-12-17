@@ -1,7 +1,7 @@
-resource "aws_s3_bucket" "uploads" {
-  bucket = "${var.project_name}-uploads"
+resource "random_id" "suffix" {
+  byte_length = 4
 }
 
-output "s3_bucket_name" {
-  value = aws_s3_bucket.uploads.bucket
+resource "aws_s3_bucket" "uploads" {
+  bucket = "strapi-uploads-${random_id.suffix.hex}"
 }

@@ -2,15 +2,16 @@ variable "region" {
   default = "ap-south-1"
 }
 
-variable "project_name" {
-  default = "strapi-ecs"
+variable "image_url" {
+  description = "ECR image URL with tag"
+  type        = string
 }
 
-variable "container_port" {
-  default = 1337
+variable "db_username" {
+  type = string
 }
 
-variable "db_username" {}
 variable "db_password" {
+  type      = string
   sensitive = true
 }
