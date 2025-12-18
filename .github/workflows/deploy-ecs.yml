@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +22,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # ✅ REQUIRED: Install Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -31,8 +31,11 @@ jobs:
         working-directory: terraform
         run: terraform init
 
-      - name: Terraform Apply (update ECS image)
+      - name: Terraform Apply (Deploy to ECS)
         working-directory: terraform
-        run: |
-          terraform apply -auto-approve \
-          -var="image_url=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}"
+        env:
+          TF_VAR_region: ${{ secrets.REGION }}
+          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: terraform apply -auto-approve \
+          -var="image_url=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/strapi:${{ github.event.workflow_run.head_sha }}"
