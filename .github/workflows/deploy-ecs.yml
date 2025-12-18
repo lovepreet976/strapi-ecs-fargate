@@ -37,5 +37,4 @@ jobs:
           TF_VAR_region: ${{ secrets.REGION }}
           TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: terraform apply -auto-approve \
-          -var="image_url=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/strapi:${{ github.event.workflow_run.head_sha }}"
+        run: terraform apply -auto-approve -var="image_url=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/strapi:${{ github.event.workflow_run.head_sha }}"
