@@ -1,4 +1,4 @@
-name: CI - Build & Push Strapi Image (Docker Hub)
+name: CI - Build & Push Strapi Image
 
 on:
   push:
