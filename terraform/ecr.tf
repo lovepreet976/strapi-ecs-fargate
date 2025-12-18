@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "strapi" {
-  name = "strapi-app"
+  name = "application-deployment"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -9,7 +9,7 @@ resource "aws_ecr_repository" "strapi" {
     Project = "strapi-ecs"
     Managed = "terraform"
   }
-  
+
   lifecycle {
     prevent_destroy = true
   }

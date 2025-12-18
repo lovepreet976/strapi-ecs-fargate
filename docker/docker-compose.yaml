@@ -20,7 +20,7 @@ services:
       retries: 5
 
   strapi:
-    image: strapi-test
+    image: strapi-app
     container_name: strapi-app
     depends_on:
       postgres:

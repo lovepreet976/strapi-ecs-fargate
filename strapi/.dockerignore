@@ -1,0 +1,23 @@
+# Node
+node_modules
+strapi/node_modules
+
+# Git & CI
+.git
+.github
+
+# Terraform
+terraform
+
+# Docker
+docker-compose.yaml
+docker/Dockerfile
+
+# Env & docs
+#.env
+#.env.*
+README.md
+docs/
+
+# Logs
+*.log

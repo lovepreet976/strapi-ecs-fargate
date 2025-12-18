@@ -13,15 +13,22 @@ resource "aws_ecs_task_definition" "strapi" {
   network_mode             = "awsvpc"
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = aws_iam_role.ecs_execution.arn
+
+  execution_role_arn = aws_iam_role.ecs_execution.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
       name  = "strapi"
       image = var.image_url
-      portMappings = [{
-        containerPort = 1337
-      }]
+
+      portMappings = [
+        {
+          containerPort = 1337
+          protocol      = "tcp"
+        }
+      ]
+
       environment = [
         { name = "DATABASE_CLIENT", value = "postgres" },
         { name = "DATABASE_HOST", value = aws_db_instance.postgres.address },
@@ -29,18 +36,19 @@ resource "aws_ecs_task_definition" "strapi" {
         { name = "DATABASE_NAME", value = "strapi" },
         { name = "DATABASE_USERNAME", value = var.db_username },
         { name = "DATABASE_PASSWORD", value = var.db_password },
+
         { name = "AWS_BUCKET", value = aws_s3_bucket.uploads.bucket },
 
         { name = "DATABASE_SSL", value = "true" },
-{ name = "DATABASE_SSL_REJECT_UNAUTHORIZED", value = "false" }
-
+        { name = "DATABASE_SSL_REJECT_UNAUTHORIZED", value = "false" }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.strapi.name
           awslogs-region        = var.region
-          awslogs-stream-prefix = "ecs"
+          awslogs-stream-prefix = "ecs/strapi"
         }
       }
     }
@@ -54,9 +62,12 @@ resource "aws_ecs_service" "strapi" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+   enable_execute_command = true
+
   depends_on = [
     aws_db_instance.postgres,
-    aws_iam_role_policy_attachment.ecs_exec_policy
+    aws_iam_role_policy_attachment.ecs_exec_policy,
+    aws_iam_role_policy_attachment.ecs_task_s3
   ]
 
   network_configuration {
