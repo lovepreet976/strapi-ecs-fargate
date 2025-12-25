@@ -32,9 +32,20 @@ jobs:
           aws ecs register-task-definition \
             --cli-input-json file://taskdef-rendered.json
 
+      - name: Create CodeDeploy revision file
+        run: |
+          cat <<EOF > revision.json
+          {
+            "revisionType": "AppSpecContent",
+            "appSpecContent": {
+              "content": "$(base64 -w 0 appspec/appspec.yaml)"
+            }
+          }
+          EOF
+
       - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name strapi-codedeploy-app \
             --deployment-group-name strapi-blue-green \
-            --revision revisionType=AppSpecContent,appSpecContent="{\"content\":\"$(cat appspec/appspec.yaml | base64 | tr -d '\n')\"}"
+            --revision file://revision.json
