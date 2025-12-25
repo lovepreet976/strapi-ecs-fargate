@@ -1,0 +1,43 @@
+{
+  "family": "strapi-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+
+  "executionRoleArn": "arn:aws:iam::265766434095:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::265766434095:role/ecsTaskRole",
+
+  "containerDefinitions": [
+    {
+      "name": "strapi",
+      "image": "IMAGE_URI",
+      "essential": true,
+
+      "portMappings": [
+        {
+          "containerPort": 1337,
+          "protocol": "tcp"
+        }
+      ],
+
+      "environment": [
+        { "name": "DATABASE_CLIENT", "value": "postgres" },
+        { "name": "DATABASE_HOST", "value": "terraform-20251225130757124000000005.cvomc2smg936.ap-south-1.rds.amazonaws.com" },
+        { "name": "DATABASE_PORT", "value": "5432" },
+        { "name": "DATABASE_NAME", "value": "strapi" },
+        { "name": "DATABASE_USERNAME", "value": "strapi" },
+        { "name": "DATABASE_PASSWORD", "value": "StrongPassword123" }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/strapi",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
