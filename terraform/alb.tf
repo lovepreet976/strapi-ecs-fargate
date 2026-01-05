@@ -8,7 +8,7 @@ resource "aws_lb" "strapi" {
   security_groups    = [aws_security_group.alb_sg.id]
 }
 
-# BLUE target group
+# BLUE target groupy
 resource "aws_lb_target_group" "blue" {
   name        = "strapi-blue-tg"
   port        = 1337
